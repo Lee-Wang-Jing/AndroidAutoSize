@@ -19,6 +19,7 @@ import android.app.Activity;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.SparseArray;
 
 import me.jessyan.autosize.external.ExternalAdaptInfo;
@@ -39,9 +40,10 @@ import me.jessyan.autosize.utils.Preconditions;
 public final class AutoSizeCompat {
     private static SparseArray<DisplayMetricsInfo> mCache = new SparseArray<>();
     private static final int MODE_SHIFT = 30;
-    private static final int MODE_MASK  = 0x3 << MODE_SHIFT;
-    private static final int MODE_ON_WIDTH  = 1 << MODE_SHIFT;
-    private static final int MODE_DEVICE_SIZE  = 2 << MODE_SHIFT;
+    private static final int MODE_MASK = 0x3 << MODE_SHIFT;
+    private static final int MODE_ON_WIDTH = 1 << MODE_SHIFT;
+    private static final int MODE_DEVICE_SIZE = 2 << MODE_SHIFT;
+    private static float density2;
 
     private AutoSizeCompat() {
         throw new IllegalStateException("you can't instantiate me!");
@@ -259,8 +261,15 @@ public final class AutoSizeCompat {
      * @param xdpi           {@link DisplayMetrics#xdpi}
      */
     private static void setDensity(DisplayMetrics displayMetrics, float density, int densityDpi, float scaledDensity, float xdpi) {
+        Log.e("GDTDEBUG", "setDensity " + "\n" +
+                "density==>" + density + "\n" +
+                "densityDpi==>" + densityDpi + "\n" +
+                "scaledDensity==>" + scaledDensity + "\n" +
+                "xdpi==>" + xdpi + "\n"
+        );
         if (AutoSizeConfig.getInstance().getUnitsManager().isSupportDP()) {
             displayMetrics.density = density;
+            density2 = density;
             displayMetrics.densityDpi = densityDpi;
         }
         if (AutoSizeConfig.getInstance().getUnitsManager().isSupportSP()) {
@@ -280,6 +289,10 @@ public final class AutoSizeCompat {
                 break;
             default:
         }
+    }
+
+    public static float getDensity2() {
+        return density2;
     }
 
     /**
